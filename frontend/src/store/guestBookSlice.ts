@@ -1,5 +1,6 @@
 import {GuestBookData} from '../types';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {fetchGuestBook, postGuestBook} from './guestBookThunks';
 
 export interface GuestBookState {
   guestBookData: GuestBookData[];
@@ -22,6 +23,28 @@ export const guestBookSlice = createSlice({
     showModal: (state, action: PayloadAction<boolean>) => {
       state.isModalStatus = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchGuestBook.pending, (state) => {
+      state.isFetchLoading = true;
+    });
+    builder.addCase(fetchGuestBook.fulfilled, (state, {payload: data}) => {
+      state.isFetchLoading = false;
+      state.guestBookData = data;
+    });
+    builder.addCase(fetchGuestBook.rejected, (state) => {
+      state.isFetchLoading = false;
+    });
+
+    builder.addCase(postGuestBook.pending, (state) => {
+      state.isPostLoading = true;
+    });
+    builder.addCase(postGuestBook.fulfilled, (state) => {
+      state.isPostLoading = false;
+    });
+    builder.addCase(postGuestBook.rejected, (state) => {
+      state.isPostLoading = false;
+    });
   },
   selectors: {
     selectGuestBookData: (state) => state.guestBookData,

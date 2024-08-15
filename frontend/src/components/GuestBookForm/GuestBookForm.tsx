@@ -16,6 +16,9 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import FileInput from '../FileInput/FileInput';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {selectIsModalStatus, showModal} from '../../store/guestBookSlice';
+import {postGuestBook} from '../../store/guestBookThunks';
 
 const GuestBookForm = () => {
   const [guestBookData, setGuestBookData] = useState<GuestBookData>({
@@ -24,6 +27,8 @@ const GuestBookForm = () => {
     image: null,
   });
   const [resetFileName, setResetFileName] = useState(false);
+  const dispatch = useAppDispatch();
+  const isModalStatus = useAppSelector(selectIsModalStatus);
 
   const handleResetFileName = (status: boolean) => {
     setResetFileName(status);
@@ -51,7 +56,9 @@ const GuestBookForm = () => {
       event.preventDefault();
 
       if (guestBookData.message.trim().length !== 0) {
+
         guestBookData.author.trim();
+        await dispatch(postGuestBook(guestBookData)).unwrap();
         setGuestBookData({
           author: '',
           message: '',
@@ -59,6 +66,7 @@ const GuestBookForm = () => {
         });
 
         setResetFileName(true);
+        dispatch(showModal(false));
         toast.success('Запись была успешно добавлена.');
       }
     } catch (error) {
@@ -68,58 +76,62 @@ const GuestBookForm = () => {
   };
 
   return (
-    <Dialog open={true} maxWidth="sm">
-      <DialogTitle>
-        Гостевая книга
-        <IconButton aria-label="close" sx={{position: 'absolute', right: 8, top: 8,}}>
-          <CloseIcon/>
-        </IconButton>
-      </DialogTitle>
-      <Box component="form" onSubmit={onSubmitForm}>
-        <DialogContent dividers>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                onChange={onFieldChange}
-                label="Автор"
-                id="author"
-                name="author"
-                value={guestBookData.author}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                onChange={onFieldChange}
-                label="Сообщение"
-                id="message"
-                name="message"
-                value={guestBookData.message}
-                required
-                multiline
-                rows={4}
-              />
-            </Grid>
-            <Grid item>
-              <FileInput
-                onChange={onChangeFileInput}
-                label="Изображение"
-                name="image"
-                resetFileName={resetFileName}
-                handleResetFileName={handleResetFileName}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{pt: 2, pb: 2}}>
-          <Button color="error" variant="contained" startIcon={<CancelIcon/>}>
-            Закрыть
-          </Button>
-          <Button color="primary" type="submit" variant="contained" startIcon={<SendIcon/>}>
-            Добавить
-          </Button>
-        </DialogActions>
-      </Box>
-    </Dialog>
+    <>
+      {isModalStatus && (
+        <Dialog open={isModalStatus} onClose={() => dispatch(showModal(false))} maxWidth="sm">
+          <DialogTitle>
+            Гостевая книга
+            <IconButton  onClick={() => dispatch(showModal(false))} sx={{position: 'absolute', right: 8, top: 8,}}>
+              <CloseIcon/>
+            </IconButton>
+          </DialogTitle>
+          <Box component="form" onSubmit={onSubmitForm}>
+            <DialogContent dividers>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    onChange={onFieldChange}
+                    label="Автор"
+                    id="author"
+                    name="author"
+                    value={guestBookData.author}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    onChange={onFieldChange}
+                    label="Сообщение"
+                    id="message"
+                    name="message"
+                    value={guestBookData.message}
+                    required
+                    multiline
+                    rows={4}
+                  />
+                </Grid>
+                <Grid item>
+                  <FileInput
+                    onChange={onChangeFileInput}
+                    label="Изображение"
+                    name="image"
+                    resetFileName={resetFileName}
+                    handleResetFileName={handleResetFileName}
+                  />
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions sx={{pt: 2, pb: 2}}>
+              <Button onClick={() => dispatch(showModal(false))} color="error" variant="contained" startIcon={<CancelIcon/>}>
+                Закрыть
+              </Button>
+              <Button color="primary" type="submit" variant="contained" startIcon={<SendIcon/>}>
+                Добавить
+              </Button>
+            </DialogActions>
+          </Box>
+        </Dialog>
+      )}
+    </>
   );
 };
 
