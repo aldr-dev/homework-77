@@ -20,6 +20,6 @@ export const postGuestBook = createAsyncThunk<void, GuestBookDataForm, { state: 
       formData.append('image', data.image);
     }
 
-    await axiosApi.post<GuestBookData>('/guestBooks', formData);
+    await axiosApi.post<GuestBookDataForm>('/guestBooks', formData);
   }
 );

@@ -18,7 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FileInput from '../FileInput/FileInput';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {selectIsModalStatus, selectIsPostLoading, showModal} from '../../store/guestBookSlice';
-import {postGuestBook} from '../../store/guestBookThunks';
+import {fetchGuestBook, postGuestBook} from '../../store/guestBookThunks';
 import {LoadingButton} from '@mui/lab';
 
 const GuestBookForm = () => {
@@ -61,6 +61,7 @@ const GuestBookForm = () => {
 
         guestBookData.author.trim();
         await dispatch(postGuestBook(guestBookData)).unwrap();
+        await dispatch(fetchGuestBook()).unwrap();
         setGuestBookData({
           author: '',
           message: '',
@@ -83,7 +84,7 @@ const GuestBookForm = () => {
         <Dialog open={isModalStatus} onClose={() => dispatch(showModal(false))} maxWidth="sm">
           <DialogTitle>
             Гостевая книга
-            <IconButton  onClick={() => dispatch(showModal(false))} sx={{position: 'absolute', right: 8, top: 8,}}>
+            <IconButton onClick={() => dispatch(showModal(false))} sx={{position: 'absolute', right: 8, top: 8,}}>
               <CloseIcon/>
             </IconButton>
           </DialogTitle>
@@ -123,7 +124,8 @@ const GuestBookForm = () => {
               </Grid>
             </DialogContent>
             <DialogActions sx={{pt: 2, pb: 2}}>
-              <Button onClick={() => dispatch(showModal(false))} color="error" variant="contained" startIcon={<CancelIcon/>}>
+              <Button onClick={() => dispatch(showModal(false))} color="error" variant="contained"
+                      startIcon={<CancelIcon/>}>
                 Закрыть
               </Button>
               <LoadingButton
@@ -131,7 +133,7 @@ const GuestBookForm = () => {
                 type="submit"
                 loading={isLoading}
                 loadingPosition="start"
-                startIcon={<SendIcon />}
+                startIcon={<SendIcon/>}
                 variant="contained">
                 <span>Добавить</span>
               </LoadingButton>

@@ -30,7 +30,7 @@ export const guestBookSlice = createSlice({
     });
     builder.addCase(fetchGuestBook.fulfilled, (state, {payload: data}) => {
       state.isFetchLoading = false;
-      state.guestBookData = data;
+      state.guestBookData = data.reverse();
     });
     builder.addCase(fetchGuestBook.rejected, (state) => {
       state.isFetchLoading = false;

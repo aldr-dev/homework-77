@@ -1,6 +1,7 @@
 import express from 'express';
 import {GuestBookData} from '../types';
 import guestBookDb from '../guestBookDb';
+import {imagesUpload} from '../multer';
 
 const guestBookRouter = express.Router();
 
@@ -14,7 +15,7 @@ guestBookRouter.get('/', async (_, res) => {
   }
 });
 
-guestBookRouter.post('/', async (req, res) => {
+guestBookRouter.post('/', imagesUpload.single('image'), async (req, res) => {
   try {
     if (!req.body.message) {
       return res.status(400).send({'Ошибка': 'В запросе должно быть указано сообщение.'});
