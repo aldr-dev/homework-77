@@ -1,5 +1,7 @@
 import express from 'express';
 import cors, {CorsOptions} from 'cors';
+import guestBookDb from './guestBookDb';
+import guestBookRouter from './routers/guestBook';
 
 const app = express();
 const port = 8000;
@@ -18,3 +20,14 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/guestBooks', guestBookRouter);
+
+const run = async () => {
+  await guestBookDb.init();
+
+  app.listen(port, () => {
+    console.log(`Server running at http://127.0.0.1:${port}`);
+  });
+};
+
+run().catch(console.error);

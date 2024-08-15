@@ -1,5 +1,5 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {GuestBookData} from '../types';
+import {GuestBookData, GuestBookDataForm} from '../types';
 import {RootState} from '../app/store';
 import axiosApi from '../axiosApi';
 
@@ -10,7 +10,7 @@ export const fetchGuestBook = createAsyncThunk<GuestBookData[], void, { state: R
   }
 );
 
-export const postGuestBook = createAsyncThunk<void, GuestBookData, { state: RootState }>(
+export const postGuestBook = createAsyncThunk<void, GuestBookDataForm, { state: RootState }>(
   'guestBook/postGuestBook', async (data) => {
     const formData = new FormData();
     formData.append('author', data.author);

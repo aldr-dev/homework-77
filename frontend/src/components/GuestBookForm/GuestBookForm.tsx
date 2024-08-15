@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {GuestBookData} from '../../types';
+import {GuestBookDataForm} from '../../types';
 import {toast} from 'react-toastify';
 import {
   Dialog,
@@ -17,11 +17,12 @@ import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import FileInput from '../FileInput/FileInput';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectIsModalStatus, showModal} from '../../store/guestBookSlice';
+import {selectIsModalStatus, selectIsPostLoading, showModal} from '../../store/guestBookSlice';
 import {postGuestBook} from '../../store/guestBookThunks';
+import {LoadingButton} from '@mui/lab';
 
 const GuestBookForm = () => {
-  const [guestBookData, setGuestBookData] = useState<GuestBookData>({
+  const [guestBookData, setGuestBookData] = useState<GuestBookDataForm>({
     author: '',
     message: '',
     image: null,
@@ -29,6 +30,7 @@ const GuestBookForm = () => {
   const [resetFileName, setResetFileName] = useState(false);
   const dispatch = useAppDispatch();
   const isModalStatus = useAppSelector(selectIsModalStatus);
+  const isLoading = useAppSelector(selectIsPostLoading);
 
   const handleResetFileName = (status: boolean) => {
     setResetFileName(status);
@@ -124,9 +126,15 @@ const GuestBookForm = () => {
               <Button onClick={() => dispatch(showModal(false))} color="error" variant="contained" startIcon={<CancelIcon/>}>
                 Закрыть
               </Button>
-              <Button color="primary" type="submit" variant="contained" startIcon={<SendIcon/>}>
-                Добавить
-              </Button>
+              <LoadingButton
+                color="primary"
+                type="submit"
+                loading={isLoading}
+                loadingPosition="start"
+                startIcon={<SendIcon />}
+                variant="contained">
+                <span>Добавить</span>
+              </LoadingButton>
             </DialogActions>
           </Box>
         </Dialog>
