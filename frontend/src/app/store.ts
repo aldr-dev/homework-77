@@ -1,8 +1,9 @@
 import {configureStore} from '@reduxjs/toolkit';
+import {guestBookReducer} from '../store/guestBookSlice';
 
 export const store = configureStore({
   reducer: {
-    // guestBook: guestBookReducer,
+    guestBook: guestBookReducer,
   }
 });
 

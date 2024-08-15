@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {GuestBookFormField} from '../../types';
+import {GuestBookData} from '../../types';
 import {toast} from 'react-toastify';
 import {
   Dialog,
@@ -18,7 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FileInput from '../FileInput/FileInput';
 
 const GuestBookForm = () => {
-  const [guestBookData, setGuestBookData] = useState<GuestBookFormField>({
+  const [guestBookData, setGuestBookData] = useState<GuestBookData>({
     author: '',
     message: '',
     image: null,
